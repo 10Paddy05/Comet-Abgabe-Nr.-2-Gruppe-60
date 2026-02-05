@@ -148,3 +148,160 @@ counts <- c(sum(count_jan), sum(count_feb),sum(count_mar),sum(count_apr),sum(cou
             sum(count_oct), sum(count_nov), sum(count_dec)) # Vektor, der die Summe aller ausgeliehenen Fahrrädern enthält.
 
 which.max(counts) # Abfrage des Maximums
+
+
+# AUFGABE 4
+# ------ Aufgabe 4.2  ------
+install.packages("ggplot2") # Installation aller relevanten Pakete
+install.packages("dplyr")
+install.packages("plotly")
+library(ggplot2) # Laden aller Pakete
+library(dplyr)
+library(plotly)
+
+ggplot(data = data_60) +
+  geom_point(aes(x = (average_temperature - 32) * 5/9,
+                 y = count)) +
+  xlab("Mittlere Temperatur (in °C)") +
+  ylab("Anzahl ausgeliehener Fahrräder") +
+  ggtitle("Anzahl ausgeliehener Fahrräder im Zusammenhang mit der Temperatur") +
+  theme_classic()
+
+ggplot(data =  data_60) +
+  geom_point(aes(x = precipitation, y = count)) +
+  xlab("Niederschlagsmenge (in Zoll)") +
+  ylab("Anzahl ausgeliehener Fahrräder") +
+  ggtitle("Ausgeliehene Fahrräder im Zusammenhang mit dem Niederschlag") +
+  theme_classic()
+
+ggplot(data =  data_60) +
+  geom_point(aes(x = windspeed *1.61, y = count)) +
+  xlab("Windgeschwindigkeit (in Kilometer pro Stunde)") +
+  ylab("Anzahl ausgeliehener Fahrräder") +
+  ggtitle("Ausgeliehene Fahrräder im Zusammenhang mit der Windgeschwindigkeit") +
+  theme_classic()
+
+ggplot(data =  data_60) +
+  geom_line(aes(x = day_of_year, y = count)) +
+  xlab("Tag des Jahres") +
+  ylab("Anzahl ausgeliehener Fahrräder") +
+  ggtitle("Ausgeliehene Fahrräder im Zusammenhang mit dem Tag des Jahres (2023)") +
+  theme_classic()
+
+#  ------ Aufgabe 4.3 ------
+
+data_60_rain <- data_60 %>% 
+  filter(precipitation > 0) %>%
+  select(average_temperature, count) # Abspeichern der Daten an denen es regnet, als Attribute die Temperatur und die Anzahl der Fahrräder
+
+data_60_no_rain <- data_60 %>%
+  filter(precipitation == 0) %>%
+  select(average_temperature, count) # Wie oben, nur diesmal an Tagen ohne Regen
+
+
+
+ggplot(data = data_60_rain) +
+  geom_point(aes(x = (average_temperature - 32) * 5/9, # Temperaturumrechnung von °F in °C
+                 y = count)) +
+  xlab("Mittlere Temperatur (in °C)") +
+  ylab("Anzahl ausgeliehener Fahrräder") +
+  ggtitle("Anzahl ausgeliehene Fahrräder bei Regen")+
+  theme_classic()
+
+ggplot(data = data_60_no_rain) +
+  geom_point(aes(x = (average_temperature - 32) * 5/9,
+                 y = count)) +
+  xlab("Mittlere Temperatur (in °C)") +
+  ylab("Anzahl ausgeliehener Fahrräder") +
+  ggtitle("Anzahl ausgeliehene Fahrräder ohne Regen")+
+  theme_classic()
+
+
+#  ------ Aufgabe 4.4  ------
+
+ggplot(data = data_60) +
+  geom_histogram(aes(x = count),col="black") +
+  xlab("Anzahl ausgeliehener Fahrräder") +
+  ylab("Absolute Häufigkeit") +
+  ggtitle("Verteilung der Anzahl ausgeliehener Fahrräder")
+
+ggplot(data = data_60) +
+  geom_histogram(aes(x = (average_temperature - 32) * 5/9),col="black") +
+  xlab("Mittlere Temperatur (in °C)") +
+  ylab("Absolute Häufigkeit") +
+  ggtitle("Verteilung der mittleren Temperatur")
+
+ggplot(data = data_60) +
+  geom_histogram(aes(x = precipitation),col="black") +
+  xlab("Niederschlagsmenge (in Zoll)") +
+  ylab("Absolute Häufigkeit") +
+  ggtitle("Verteilung der Niederschlagsmenge")
+
+ggplot(data = data_60) +
+  geom_histogram(aes(x = windspeed *1.61),col="black") +
+  xlab("Windgeschwindigkeit (in km/h)") +
+  ylab("Absolute Häufigkeit") +
+  ggtitle("Verteilung der Windgeschwindigkeit")
+
+
+#  ------ Aufgabe 4.5  ------
+season <- c(Winter, Frühling, Sommer, Herbst)
+
+Winter<- data_60 %>%
+  filter( month_of_year %in% c(12, 1, 2)) %>% # Dafuer sorgen, dass die richtigen Monate abgespeichert werden
+  mutate(season = "Winter") %>%
+  select(count, season)
+
+Frühling <- data_60 %>%
+  filter(month_of_year %in% c(3:5)) %>%
+  mutate(season = "Frühling") %>%
+  select(count, season)
+
+Sommer <- data_60 %>%
+  filter(month_of_year %in% c(6:8)) %>%
+  mutate(season = "Sommer") %>% 
+  select(count, season)
+
+Herbst<- data_60 %>%
+  filter(month_of_year %in% c(9:11)) %>%
+  mutate(season = "Herbst") %>%
+  select(count, season)
+
+all_seasons <- bind_rows(Winter, Frühling, Sommer, Herbst)
+
+fig <- ggplot(all_seasons, aes(x = count, fill = season)) +
+  geom_density(alpha = 0.4) +
+  labs(
+    title = "Verteilung der ausgeliehenen Fahrräder nach Jahreszeit",
+    x = "Anzahl ausgeliehener Fahrräder",
+    y = "Dichte",
+    fill = "Jahreszeit"
+  ) +
+  scale_fill_manual(values = c(
+    "Frühling" = "#33a02c",
+    "Sommer"   = "#1f78b4",
+    "Herbst"   = "#b2df8a",
+    "Winter"   = "#a6cee3"
+  )) +
+  theme_minimal()
+
+
+#  ------ Aufgabe 4.6  ------
+
+plot_ly(
+  data = data_60,
+  x = ~(average_temperature - 32 )* 5/9,
+  y = ~windspeed*1.61,
+  z = ~count,
+  type = "scatter3d",
+  mode = "markers",
+  color = ~count
+) %>% 
+  layout(
+  scene = list(
+      xaxis = list(title = "Mittlere Temperatur (in °C)"),
+      yaxis = list(title = "Windgeschwindigkeit (in km/h)"),
+      zaxis = list(title = "Anzahl ausgeliehener Fahrräder")
+    )
+  )
+
