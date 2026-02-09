@@ -297,15 +297,19 @@ plot_ly(
   z = ~count,
   type = "scatter3d",
   mode = "markers",
-  color = ~count
+  color = ~count,
+  marker = list(size = 5, opacity =0.5),
+  hovertemplate = paste(
+    "Mittlere Temperatur: %{x:.1f} °C<br>",
+    "Windgeschwindigkeit: %{y:.1f} km/h<br>",
+    "Anzahl Fahrräder: %{z}<extra></extra>"
+  )
 ) %>% 
-  marker = list(
-  title = (list(text = "Anzahl ausgeliehener Fahrräder")) +
   layout(
+    title = "Zusammenhang zwischen Temperatur, Wind und Fahrradnutzung",
     scene = list(
       xaxis = list(title = "Mittlere Temperatur (in °C)"),
       yaxis = list(title = "Windgeschwindigkeit (in km/h)"),
       zaxis = list(title = "Anzahl ausgeliehener Fahrräder")
     )
-  )
   )
