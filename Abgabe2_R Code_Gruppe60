@@ -288,7 +288,7 @@ fig <- ggplot(all_seasons, aes(x = count, fill = season)) +
   theme_minimal()
 
 fig
-#  ------ Aufgabe 4.6  ------ PASST NICHT GANZ UND WIRD NOCH VERÄNDERT
+#  ------ Aufgabe 4.6  ------ 
 
 plot_ly(
   data = data_60,
