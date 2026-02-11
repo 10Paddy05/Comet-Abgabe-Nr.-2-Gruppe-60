@@ -177,6 +177,7 @@ ggplot(data =  data_60) +
 
 ggplot(data =  data_60) +
   geom_point(aes(x = windspeed *1.61, y = count)) +
+  scale_x_continuous(limits = c(0, NA)) +
   xlab("Windgeschwindigkeit (in Kilometer pro Stunde)") +
   ylab("Anzahl ausgeliehener Fahrräder") +
   ggtitle("Ausgeliehene Fahrräder im Zusammenhang mit der Windgeschwindigkeit") +
@@ -239,7 +240,8 @@ ggplot(data = data_60) +
   ggtitle("Verteilung der Niederschlagsmenge")
 
 ggplot(data = data_60) +
-  geom_histogram(aes(x = windspeed *1.61),col="black") +
+  geom_histogram(aes(x = windspeed *1.61), binwidth = 1, col="black") +
+  coord_cartesian(xlim = c(0, NA)) +
   xlab("Windgeschwindigkeit (in km/h)") +
   ylab("Absolute Häufigkeit") +
   ggtitle("Verteilung der Windgeschwindigkeit")
@@ -288,7 +290,7 @@ fig <- ggplot(all_seasons, aes(x = count, fill = season)) +
   theme_minimal()
 
 fig
-#  ------ Aufgabe 4.6  ------ 
+#  ------ Aufgabe 4.6  ------
 
 plot_ly(
   data = data_60,
@@ -313,3 +315,4 @@ plot_ly(
       zaxis = list(title = "Anzahl ausgeliehener Fahrräder")
     )
   )
+  
